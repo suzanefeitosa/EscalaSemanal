@@ -50,13 +50,16 @@ export default function DashboardPage() {
     const weekNumber = Math.floor((diffInDays + firstDayOfWeek) / 7) + 1;
     setShiftSlacker(weekNumber % 2 == 0 ? 'tarde' : 'manhã');
     let auxEmployees = await getEmployees();
-    auxEmployees= auxEmployees.map((emp) => {
-      if(emp.slacker){
-        emp.shift = weekNumber % 2 == 0 ? 'Tarde' : 'Manhã'
-      }
-      return emp;
-    })
-   saveEmployees(auxEmployees)
+    if(auxEmployees.find((emp) => emp.slacker)){
+
+      auxEmployees= auxEmployees.map((emp) => {
+        if(emp.slacker){
+          emp.shift = weekNumber % 2 == 0 ? 'Tarde' : 'Manhã'
+        }
+        return emp;
+      })
+      saveEmployees(auxEmployees)
+    }
    setEmployees(auxEmployees)
   }
 
@@ -73,11 +76,11 @@ export default function DashboardPage() {
   const getDayStatus = (employee: Employee, dayIndex: number): DayStatus => {
     const weekStartStr = getWeekStart(currentWeekStart);
     const override = overrides.find(
-      (o) => o.employeeId === employee.id && o.dayIndex === dayIndex && o.weekStart === weekStartStr
+      (o) => o.employee_id === employee.id && o.day_index === dayIndex && o.week_start === weekStartStr
     );
 
     if (override) {
-      if (employee.fixedDayOff === dayIndex) {
+      if (employee.fixed_day_off === dayIndex) {
         return override.status === 'disponível' ? 'temp-available' : 'fixed-dayoff';
       } else {
         return override.status === 'dayoff' ? 'temp-dayoff' : 'disponível';
@@ -93,7 +96,7 @@ export default function DashboardPage() {
 
     }
 
-    return employee.fixedDayOff === dayIndex ? 'fixed-dayoff' : 'disponível';
+    return employee.fixed_day_off === dayIndex ? 'fixed-dayoff' : 'disponível';
   };
 
   const getEmployeesForDay = (dayIndex: number) => {
@@ -119,7 +122,7 @@ export default function DashboardPage() {
 
   const handleResetWeek = async () => {
     const weekStartStr = getWeekStart(currentWeekStart);
-    const newOverrides = overrides.filter((o) => o.weekStart !== weekStartStr);
+    const newOverrides = overrides.filter((o) => o.week_start !== weekStartStr);
     setOverrides(newOverrides);
     await saveOverrides(newOverrides);
   };
@@ -271,7 +274,7 @@ export default function DashboardPage() {
                             >
                               <div className="flex items-start justify-between">
                                 <p className="text-sm font-medium text-gray-900">
-                                  {emp.fullName}
+                                  {emp.full_name}
                                 </p>
                               </div>
                             </div>
@@ -316,7 +319,7 @@ export default function DashboardPage() {
                             >
                               <div className="flex items-start justify-between">
                                 <p className="text-sm font-medium text-gray-900">
-                                  {emp.fullName}
+                                  {emp.full_name}
                                 </p>
                               </div>
                             </div>

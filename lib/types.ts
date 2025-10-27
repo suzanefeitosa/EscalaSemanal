@@ -1,16 +1,22 @@
 export interface Employee {
   id: string;
-  fullName: string;
+  full_name: string;
   shift: string;
-  fixedDayOff: number;
+  fixed_day_off: number;
   slacker: boolean;
 }
 
 export interface WeeklyOverride {
-  employeeId: string;
-  dayIndex: number;
+  employee_id: string;
+  day_index: number;
   status: 'disponível' | 'dayoff';
-  weekStart: string;
+  week_start: string;
 }
 
 export type DayStatus = 'disponível' | 'fixed-dayoff' | 'temp-dayoff' | 'temp-available';
+
+export interface User {
+  email: string;
+  password: string;
+  role: string;
+}

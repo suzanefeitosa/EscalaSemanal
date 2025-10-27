@@ -12,18 +12,18 @@ interface EmployeeFormProps {
 
 export default function EmployeeForm({ employee, onClose, onSave }: EmployeeFormProps) {
   const [formData, setFormData] = useState({
-    fullName: '',
+    full_name: '',
     shift: 'Manhã',
-    fixedDayOff: 0,
+    fixed_day_off: 0,
     slacker: false,
   });
 
   useEffect(() => {
     if (employee) {
       setFormData({
-        fullName: employee.fullName,
+        full_name: employee.full_name,
         shift: employee.shift,
-        fixedDayOff: employee.fixedDayOff,
+        fixed_day_off: employee.fixed_day_off,
         slacker: employee.slacker
       });
     }
@@ -33,7 +33,7 @@ export default function EmployeeForm({ employee, onClose, onSave }: EmployeeForm
     e.preventDefault();
 
     const newEmployee: Employee = {
-      id: employee?.id || Date.now().toString(),
+      id: employee?.id || crypto.randomUUID(),
       ...formData,
     };
 
@@ -69,9 +69,9 @@ export default function EmployeeForm({ employee, onClose, onSave }: EmployeeForm
             <input
               id="fullName"
               type="text"
-              value={formData.fullName}
+              value={formData.full_name}
               onChange={(e) =>
-                setFormData({ ...formData, fullName: e.target.value })
+                setFormData({ ...formData, full_name: e.target.value })
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"
               required
@@ -110,11 +110,11 @@ export default function EmployeeForm({ employee, onClose, onSave }: EmployeeForm
             </label>
             <select
               id="fixedDayOff"
-              value={formData.fixedDayOff}
+              value={formData.fixed_day_off}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  fixedDayOff: Number(e.target.value),
+                  fixed_day_off: Number(e.target.value),
                 })
               }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none"

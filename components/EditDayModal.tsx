@@ -28,13 +28,13 @@ export default function EditDayModal({
 
   const getEmployeeStatus = (employee: Employee): 'disponível' | 'dayoff' => {
     const override = overrides.find(
-      (o) => o.employeeId === employee.id && o.dayIndex === dayIndex && o.weekStart === weekStart
+      (o) => o.employee_id === employee.id && o.day_index === dayIndex && o.week_start === weekStart
     );
 
     if (override) {
       return override.status;
     }
-    return employee.fixedDayOff === dayIndex || (employee.shift.toLowerCase().includes(shiftOff) && dayIndex == 0)? 'dayoff' : 'disponível';
+    return employee.fixed_day_off === dayIndex || (employee.shift.toLowerCase().includes(shiftOff) && dayIndex == 0)? 'dayoff' : 'disponível';
   };
 
   const handleToggle = (employeeId: string) => {
@@ -45,21 +45,21 @@ export default function EditDayModal({
     const newStatus: 'disponível' | 'dayoff' = currentStatus === 'disponível' ? 'dayoff' : 'disponível';
 
     const existingOverrideIndex = overrides.findIndex(
-      (o) => o.employeeId === employeeId && o.dayIndex === dayIndex && o.weekStart === weekStart
+      (o) => o.employee_id === employeeId && o.day_index === dayIndex && o.week_start === weekStart
     );
 
     let newOverrides = [...overrides];
 
-    if (employee.fixedDayOff === dayIndex) {
+    if (employee.fixed_day_off === dayIndex) {
       if (newStatus === 'disponível') {
         if (existingOverrideIndex >= 0) {
           newOverrides[existingOverrideIndex].status = 'disponível';
         } else {
           newOverrides.push({
-            employeeId,
-            dayIndex,
+            employee_id: employeeId,
+            day_index: dayIndex,
             status: 'disponível',
-            weekStart,
+            week_start: weekStart,
           });
         }
       } else {
@@ -78,11 +78,11 @@ export default function EditDayModal({
             newOverrides[existingOverrideIndex].status = 'dayoff';
           } else {
             newOverrides.push({
-              employeeId,
-              dayIndex,
-              status: 'dayoff',
-              weekStart,
-            });
+            employee_id: employeeId,
+            day_index: dayIndex,
+            status: 'dayoff',
+            week_start: weekStart,
+          });
           }
         }
       } else {
@@ -91,21 +91,21 @@ export default function EditDayModal({
               newOverrides.splice(existingOverrideIndex, 1);
             }
             newOverrides.push({
-            employeeId,
-            dayIndex,
+            employee_id: employeeId,
+            day_index: dayIndex,
             status: 'disponível',
-            weekStart,
+            week_start: weekStart,
           });
         }else{
           if (existingOverrideIndex >= 0) {
             newOverrides.splice(existingOverrideIndex, 1);
           }else{
             newOverrides.push({
-              employeeId,
-              dayIndex,
-              status: 'disponível',
-              weekStart,
-            })
+            employee_id: employeeId,
+            day_index: dayIndex,
+            status: 'disponível',
+            week_start: weekStart,
+          })
           }
         }
       }
@@ -138,7 +138,7 @@ export default function EditDayModal({
             {employees.map((employee) => {
               const status = getEmployeeStatus(employee);
               const isOverridden = overrides.some(
-                (o) => o.employeeId === employee.id && o.dayIndex === dayIndex && o.weekStart === weekStart
+                (o) => o.employee_id === employee.id && o.day_index === dayIndex && o.week_start === weekStart
               );
 
               return (
@@ -147,7 +147,7 @@ export default function EditDayModal({
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{employee.fullName}</p>
+                    <p className="font-medium text-gray-900">{employee.full_name}</p>
                     <p className="text-sm text-gray-600">Turno: {employee.shift}</p>
                     {isOverridden && (
                       <p className="text-xs text-red-400 mt-1">Mudança Temporária</p>
@@ -155,7 +155,7 @@ export default function EditDayModal({
                   </div>
 
                   <button
-                    onClick={() => handleToggle(employee.id)}
+                    onClick={() => handleToggle(employee.id!)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       status === 'disponível'
                         ? 'bg-primary-neutrobr text-white hover:bg-primary-darkbr'

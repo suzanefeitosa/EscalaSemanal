@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { getUsers } from '@/lib/storage';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,17 +11,20 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
       setError('');
 
-  // Mock fixo — simples e direto
-  const users = [
-    { email: 'folgaservicarcabo@gmail.com', password: 'adm@folga', role: 'admin' },
-    { email: 'equipeservicarcabo@gmail.com', password: 'servicar2025', role: 'viewer' },
-  ];
 
+  // const users = [
+  //   { email: 'folgaservicarcabo@gmail.com', password: 'adm@folga', role: 'admin' },
+  //   { email: 'equipeservicarcabo@gmail.com', password: 'servicar2025', role: 'viewer' },
+  // ];
+
+  const users = await getUsers()
+
+  
   const user = users.find(
     (u) => u.email === email && u.password === password
   );

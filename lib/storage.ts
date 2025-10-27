@@ -1,4 +1,4 @@
-import { Employee, WeeklyOverride } from './types';
+import { Employee, WeeklyOverride, User } from './types';
 
 export const getEmployees = async (): Promise<Employee[]> => {
   const res = await fetch('/api/employees');
@@ -39,3 +39,7 @@ export const getWeekStart = (date: Date): string => {
   return monday.toISOString();
 };
 
+export const getUsers = async (): Promise<User[]> => {
+  const res = await fetch('/api/users');
+  return res.json();
+};

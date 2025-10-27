@@ -103,7 +103,7 @@ export default function EmployeesPage() {
         <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">
-              {employee.fullName}
+              {employee.full_name}
             </h3>
             <p className="text-sm text-gray-600 mt-1">{employee.slacker ? 'Folguista' : `Turno: ${employee.shift}`}</p>
           </div>
@@ -118,7 +118,7 @@ export default function EmployeesPage() {
             {deleteConfirm === employee.id ? (
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => handleDeleteEmployee(employee.id)}
+                  onClick={() => handleDeleteEmployee(employee.id!)}
                   className="text-red-600 hover:text-red-900 text-xs font-medium"
                 >
                   Confirmar
@@ -145,7 +145,7 @@ export default function EmployeesPage() {
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-600">Folga Fixa</span>
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-greenbr text-white">
-              {dayNames[employee.fixedDayOff]}
+              {dayNames[employee.fixed_day_off]}
             </span>
           </div>
         </div>
