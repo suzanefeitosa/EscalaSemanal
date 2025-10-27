@@ -15,12 +15,8 @@ export async function POST(req: NextRequest) {
   try {
     const newData: Employee[] = await req.json();
 
-    // limpa a tabela (mesmo comportamento do writeFileSync)
     const { error: delError } = await supabase.from('employees').delete().neq('id', '');
     if (delError) throw delError;
-    setTimeout(() => {
-      
-    }, 3000);
     const { error: insError } = await supabase.from('employees').insert(newData);
     if (insError) throw insError;
 

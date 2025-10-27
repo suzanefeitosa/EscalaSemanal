@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
   try {
     const newData: WeeklyOverride[] = await req.json();
 
-    // limpa todos antes de inserir (mesmo comportamento que o writeFileSync)
     const { error: delError } = await supabase.from('weekly_overrides').delete().neq('employee_id', '');
     if (delError) throw delError;
 

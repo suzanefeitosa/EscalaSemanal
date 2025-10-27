@@ -41,27 +41,27 @@ export default function DashboardPage() {
     handleSlacker(new Date(Date.now()))
   }, []);
 
-  const handleSlacker = async (date : Date) => {
-    const firstDay = new Date(date.getFullYear(), 0, 1); 
-    const firstDayOfWeek = firstDay.getDay(); 
+  const handleSlacker = async (date: Date) => {
+    const firstDay = new Date(date.getFullYear(), 0, 1);
+    const firstDayOfWeek = firstDay.getDay();
     const diffInDays = Math.floor(
       (date.getTime() - firstDay.getTime()) / 86400000
     );
     const weekNumber = Math.floor((diffInDays + firstDayOfWeek) / 7) + 1;
-    setShiftSlacker(weekNumber % 2 == 0 ? 'tarde' : 'manhã');
-    let auxEmployees = await getEmployees();
-    if(auxEmployees.find((emp) => emp.slacker)){
-
-      auxEmployees= auxEmployees.map((emp) => {
-        if(emp.slacker){
-          emp.shift = weekNumber % 2 == 0 ? 'Tarde' : 'Manhã'
-        }
-        return emp;
-      })
-      saveEmployees(auxEmployees)
+    setShiftSlacker(weekNumber % 2 == 0 ? "tarde" : "manhã");
+    let auxEmployees: Employee[] = employees.length == 0 ? await getEmployees() : [...employees];
+    if (auxEmployees.length > 0) {
+      if (auxEmployees.find((emp) => emp.slacker)) {
+        auxEmployees = auxEmployees.map((emp) => {
+          if (emp.slacker) {
+            emp.shift = weekNumber % 2 == 0 ? "Tarde" : "Manhã";
+          }
+          return emp;
+        });
+      }
     }
-   setEmployees(auxEmployees)
-  }
+    setEmployees(auxEmployees);
+  };
 
   const getWeekDays = (): Date[] => {
     const days: Date[] = [];
