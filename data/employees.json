@@ -1,0 +1,51 @@
+[
+  {
+    "id": "1761527469824",
+    "fullName": "Sulamita",
+    "shift": "Manhã",
+    "fixedDayOff": 3,
+    "slacker": false
+  },
+  {
+    "id": "1761527476048",
+    "fullName": "Jorge",
+    "shift": "Tarde",
+    "fixedDayOff": 0,
+    "slacker": true
+  },
+  {
+    "id": "1761527485500",
+    "fullName": "Diogo",
+    "shift": "Tarde",
+    "fixedDayOff": 2,
+    "slacker": false
+  },
+  {
+    "id": "1761527907346",
+    "fullName": "Gleyce",
+    "shift": "Manhã",
+    "fixedDayOff": 2,
+    "slacker": false
+  },
+  {
+    "id": "1761527966686",
+    "fullName": "Edson",
+    "shift": "Manhã",
+    "fixedDayOff": 4,
+    "slacker": false
+  },
+  {
+    "id": "1761527977161",
+    "fullName": "Amaury",
+    "shift": "Tarde",
+    "fixedDayOff": 3,
+    "slacker": false
+  },
+  {
+    "id": "1761528023908",
+    "fullName": "Jailton",
+    "shift": "Tarde",
+    "fixedDayOff": 4,
+    "slacker": false
+  }
+]
