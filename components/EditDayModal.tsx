@@ -1,7 +1,8 @@
 'use client';
 
 import { Employee, WeeklyOverride } from '@/lib/types';
-import { X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface EditDayModalProps {
   date: Date;
@@ -24,6 +25,11 @@ export default function EditDayModal({
   onSave,
   shiftOff
 }: EditDayModalProps) {
+
+
+
+  const [holiday, setHoliday] = useState(false)
+  const [editEmployees, setEditEmployees] = useState<Employee[]>([]);
   const dayNames = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
 
   const getEmployeeStatus = (employee: Employee): 'disponível' | 'dayoff' => {
@@ -34,7 +40,7 @@ export default function EditDayModal({
     if (override) {
       return override.status;
     }
-    return employee.fixed_day_off === dayIndex || (employee.shift.toLowerCase().includes(shiftOff) && dayIndex == 0)? 'dayoff' : 'disponível';
+    return (employee.fixed_day_off === dayIndex && !holiday )|| (employee.shift.toLowerCase().includes(shiftOff) && dayIndex == 0 )? 'dayoff' : 'disponível';
   };
 
   const handleToggle = (employeeId: string) => {
@@ -50,7 +56,7 @@ export default function EditDayModal({
 
     let newOverrides = [...overrides];
 
-    if (employee.fixed_day_off === dayIndex) {
+    if (employee.fixed_day_off === dayIndex && !holiday) {
       if (newStatus === 'disponível') {
         if (existingOverrideIndex >= 0) {
           newOverrides[existingOverrideIndex].status = 'disponível';
@@ -66,6 +72,32 @@ export default function EditDayModal({
         if (existingOverrideIndex >= 0) {
           newOverrides.splice(existingOverrideIndex, 1);
         }
+      }
+    }else if (employee.fixed_day_off === dayIndex && holiday){
+      if (newStatus === 'disponível') {
+        if (existingOverrideIndex >= 0) {
+          newOverrides[existingOverrideIndex].status = 'disponível';
+        } else {
+          newOverrides.push({
+            employee_id: employeeId,
+            day_index: dayIndex,
+            status: 'disponível',
+            week_start: weekStart,
+          });
+        }
+      } else {
+         if (existingOverrideIndex >= 0) {
+          newOverrides[existingOverrideIndex].status = 'dayoff';
+        } else{
+
+          newOverrides.push({
+            employee_id: employeeId,
+            day_index: dayIndex,
+            status: 'dayoff',
+            week_start: weekStart,
+          });
+        }
+        
       }
     } else {    
       if (newStatus === 'dayoff') {           
@@ -114,6 +146,30 @@ export default function EditDayModal({
     onSave(newOverrides);
   };
 
+  const handleHoliday = () => {
+    setHoliday(!holiday)
+  }
+
+  useEffect(() => {
+    if(dayIndex == 0 || holiday){
+        setEditEmployees( employees.toSorted((a, b) => a.shift.localeCompare(b.shift)))
+    }else {
+       setEditEmployees(employees.filter((emp) =>
+        emp.shift.toLowerCase().includes(shiftOff)
+       ));
+    }
+    if(holiday){
+      
+      employees.map((emp) => {
+        if(emp.fixed_day_off == dayIndex && emp.shift.toLowerCase().includes(shiftOff)){
+          handleToggle(emp.id)
+        }
+      })
+    }
+
+  },[holiday])
+
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-hidden">
@@ -130,15 +186,46 @@ export default function EditDayModal({
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(80vh-160px)]">
-          <p className="text-sm text-gray-600 mb-4">
-            {date.toLocaleDateString('pt-BR', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </p>
+           <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-600">
+              {date.toLocaleDateString("pt-BR", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </p>
+            {
+              dayIndex != 0 ?
+            <div className='flex items-center'>
+             <p className='pr-2 text-sm text-gray-600'>Feriado</p>
+              <button
+              onClick={() => handleHoliday()}
+              className={`w-10 h-6 flex items-center rounded-full transition-all p-1 ${
+                holiday
+                ? "bg-primary-greenbr justify-end"
+                : "bg-gray-400 justify-start"
+                }`}
+                >
+              <div className="w-4 h-4 bg-white rounded-full flex items-center justify-center">
+                {holiday ? <Check size={14} /> : <X size={14} />}
+              </div>
+            </button>
+            </div>
+              :''
+              }
+          </div>
+        
+           
+        
 
           <div className="space-y-3">
-            {employees.map((employee) => {
+            {editEmployees.map((employee) => {
               const status = getEmployeeStatus(employee);
               const isOverridden = overrides.some(
-                (o) => o.employee_id === employee.id && o.day_index === dayIndex && o.week_start === weekStart
+                (o) =>
+                  o.employee_id === employee.id &&
+                  o.day_index === dayIndex &&
+                  o.week_start === weekStart
               );
 
               return (
@@ -147,22 +234,28 @@ export default function EditDayModal({
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{employee.full_name}</p>
-                    <p className="text-sm text-gray-600">Turno: {employee.shift}</p>
+                    <p className="font-medium text-gray-900">
+                      {employee.full_name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Turno: {employee.shift}
+                    </p>
                     {isOverridden && (
-                      <p className="text-xs text-red-400 mt-1">Mudança Temporária</p>
+                      <p className="text-xs text-red-400 mt-1">
+                        Mudança Temporária
+                      </p>
                     )}
                   </div>
 
                   <button
                     onClick={() => handleToggle(employee.id!)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      status === 'disponível'
-                        ? 'bg-primary-neutrobr text-white hover:bg-primary-darkbr'
-                        : 'bg-red-100 text-red-700 hover:bg-red-200'
+                      status === "disponível"
+                        ? "bg-primary-neutrobr text-white hover:bg-primary-darkbr"
+                        : "bg-red-100 text-red-700 hover:bg-red-200"
                     }`}
                   >
-                    {status === 'disponível' ? 'Disponível' : 'Indisponível'}
+                    {status === "disponível" ? "Disponível" : "Indisponível"}
                   </button>
                 </div>
               );

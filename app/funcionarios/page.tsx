@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import EmployeeForm from '@/components/EmployeeForm';
 import { Employee } from '@/lib/types';
-import { getEmployees, saveEmployees } from '@/lib/storage';
+import { getEmployees, saveEmployees, saveEmployee, deleteEmployee, updateEmployee } from '@/lib/storage';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -30,24 +30,29 @@ export default function EmployeesPage() {
 
   const handleSaveEmployee = async (employee: Employee) => {
     let updatedEmployees: Employee[];
-
-    const existingIndex = employees.findIndex((e) => e.id === employee.id);
-    if (existingIndex >= 0) {
-      updatedEmployees = [...employees];
-      updatedEmployees[existingIndex] = employee;
-    } else {
-      updatedEmployees = [...employees, employee];
+    try {
+      const existingIndex = employees.findIndex((e) => e.id === employee.id);
+      if (existingIndex >= 0) {
+        updatedEmployees = [...employees];
+        updatedEmployees[existingIndex] = employee;
+        await updateEmployee(employee);
+        setEmployees(updatedEmployees);
+      } else {
+        updatedEmployees = [...employees, employee];
+        await saveEmployee(employee);
+        setEmployees(updatedEmployees);
+      }
+      setEditingEmployee(undefined);
+    } catch {
+      alert("Ocorreu um erro inesperado");
     }
-
-    setEmployees(updatedEmployees);
-    await saveEmployees(updatedEmployees);
-    setEditingEmployee(undefined);
   };
 
   const handleDeleteEmployee = async (id: string) => {
     const updatedEmployees = employees.filter((e) => e.id !== id);
+    const employeeToDelete = employees.find((e) => e.id === id);
+    await deleteEmployee(employeeToDelete!);
     setEmployees(updatedEmployees);
-    await saveEmployees(updatedEmployees);
     setDeleteConfirm(null);
   };
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import EditDayModal from '@/components/EditDayModal';
 import { Employee, WeeklyOverride, DayStatus } from '@/lib/types';
-import { getEmployees, getOverrides, saveOverrides, getWeekStart, saveEmployees } from '@/lib/storage';
+import { getEmployees, getOverrides, saveOverrides, getWeekStart } from '@/lib/storage';
 import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -92,7 +92,11 @@ export default function DashboardPage() {
     }
 
     if(!employee.shift.toLowerCase().includes(shiftSlacker) && dayIndex != 0){
-      return 'disponível'
+      if(false){
+
+      }else {
+       return 'disponível'
+      }
 
     }
 
@@ -350,13 +354,7 @@ export default function DashboardPage() {
         <EditDayModal
           date={selectedDay.date}
           dayIndex={selectedDay.dayIndex}
-          employees={
-            selectedDay.dayIndex == 0
-              ? employees
-              : employees.filter((emp) =>
-                  emp.shift.toLowerCase().includes(shiftSlacker)
-                )
-          }
+          employees={employees}
           overrides={overrides}
           weekStart={getWeekStart(currentWeekStart)}
           onClose={() => setSelectedDay(null)}

@@ -13,6 +13,30 @@ export const saveEmployees = async (employees: Employee[]): Promise<void> => {
   });
 };
 
+export const saveEmployee = async (employee: Employee): Promise<void> => {
+  await fetch('/api/employees', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(employee),
+  });
+};
+
+export const deleteEmployee = async (employee: Employee): Promise<void> => {
+  await fetch('/api/employees', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(employee),
+  });
+};
+
+export const updateEmployee = async (employee: Employee): Promise<void> => {
+  await fetch('/api/employees', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(employee),
+  });
+};
+
 
 
 export const getOverrides = async (): Promise<WeeklyOverride[]> => {
